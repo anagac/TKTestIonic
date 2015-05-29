@@ -1,0 +1,16 @@
+<ion-view view-title="Dashboard" hide-back-button="true">
+    <ion-nav-buttons side="primary">
+      <button class="button" ng-click="logout()">
+        Logout
+      </button>
+    </ion-nav-buttons>
+    <ion-content class="padding">
+        <button class="button button-block button-positive" ui-sref="test.detail({testID: 1})">
+          Take test
+        </button>
+        
+        <button class="button button-block button-positive">
+          My Results
+        </button>
+    </ion-content>
+</ion-view>

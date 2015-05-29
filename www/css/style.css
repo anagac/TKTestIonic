@@ -1,0 +1,13 @@
+/* Empty. Add your own CSS if you like */
+.empty-space
+{
+    height:100px;
+}
+
+.has-errors {
+  border: 1px solid red;
+}
+
+.item-input {
+  margin: 5px 0px;
+}
