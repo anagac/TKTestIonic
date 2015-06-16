@@ -3,9 +3,9 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection','ssf-services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection','SSFServices', 'chart.js'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $state, $window) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -15,9 +15,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection','ssf
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+    
+    if($window.localStorage["userID"]!==undefined)
+    {
+        $state.go("test.lobby");
+    }
   });
 })
+
+.config(function($ionicConfigProvider) {
+  $ionicConfigProvider.backButton.previousTitleText(false).text(' ');
+
+})
 .config(function($stateProvider, $urlRouterProvider) {
+
   $urlRouterProvider.otherwise('/test/');
 
   $stateProvider
@@ -50,7 +61,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection','ssf
   .state('test.results', {
     url: '/results',
     templateUrl: 'templates/results.html',
-
+    controller: 'ResultsCtrl'
+  })
+  .state('test.history', {
+    url: '/history',
+    templateUrl: 'templates/history.html',
+    controller: 'HistoryCtrl'
   })
   
   .state('test.detail', {

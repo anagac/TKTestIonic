@@ -1,0 +1,17 @@
+<ion-view view-title="My Results">
+  <ion-nav-buttons side="left">
+      <button class="button button-clear button-icon" ng-click="goBack()">
+        <i class="ion-arrow-left-c"></i>
+      </button>
+  </ion-nav-buttons>
+    <ion-content >
+        <ion-list>
+          <ion-item ng-repeat="answer in answers">
+            Test {{$index+1}}
+            <span class="item-note">
+              {{answer.createDate | date:'dd-MMM-yyyy hh:mm a'}}
+            </span>
+          </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

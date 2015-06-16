@@ -1,7 +1,7 @@
 angular.module('RESTConnection', [])
-  .constant('ENDPOINT_URI', 'https://toyapp-rcorbeil.c9.io/api/')
+  .constant('ENDPOINT_URI', 'https://c9toyapp1.herokuapp.com/api/')
   .constant('QUESTION_NUMBER','Question_Number')
-  .service('ServerQuestionModel', function ($http, ENDPOINT_URI, QUESTION_NUMBER) {
+  .service('ServerQuestionModel', function ($http,  ENDPOINT_URI, QUESTION_NUMBER) {
     var service = this,
     path = 'Questions/';
 
@@ -13,8 +13,10 @@ angular.module('RESTConnection', [])
       return getUrl(path) + itemId;
     }
 
-    service.all = function () {
-      return $http.get(getUrl());
+    service.all = function (token) {
+      return $http.get(getUrl(), {
+          params: { access_token: token }
+      });
     };
 
     service.fetch = function (questionId) {
@@ -25,17 +27,7 @@ angular.module('RESTConnection', [])
       
       return $http.get(getUrl()+"?filter[where]["+QUESTION_NUMBER+"]="+questionId);
     };
-    service.create = function (question) {
-      return $http.post(getUrl(), question);
-    };
 
-    service.update = function (itemId, question) {
-      return $http.put(getUrlForId(itemId), question);
-    };
-
-    service.destroy = function (itemId) {
-      return $http.delete(getUrlForId(itemId));
-    };
   })
   
   .service('UserModel', function ($http, ENDPOINT_URI) {
@@ -45,37 +37,39 @@ angular.module('RESTConnection', [])
     function getUrl() {
       return ENDPOINT_URI + path;
     }
-
-    function getUrlForId(itemId) {
-      return getUrl(path) + itemId;
-    }
-
-    service.all = function () {
-      return $http.get(getUrl());
-    };
-
-    service.fetch = function (userId) {
-      return $http.get(getUrlForId(userId));
-    };
     
     service.create = function (user) {
       return $http.post(getUrl(), user);
     };
-
-    service.update = function (userId, user) {
-      return $http.put(getUrlForId(userId), user);
-    };
-
-    service.destroy = function (userId) {
-      return $http.delete(getUrlForId(userId));
-    };
     
     service.login = function(user) {
+      
+      user["ttl"] = 1209600000;
       return $http.post(getUrl()+"/login",user);
     };
     
     service.logout = function(token) {
       console.log(token);
       return $http.post(getUrl()+"/logout",token);
+    };
+  })
+  
+  .service('ServerAnswersModel', function ($http, ENDPOINT_URI) {
+    var service = this,
+    path = 'TestResults/';
+
+    function getUrl() {
+      return ENDPOINT_URI + path;
+    }
+
+    service.create = function(answer, token) {
+      return $http.post(getUrl()+"?access_token="+token,answer); 
+    };
+    
+    service.all = function(userID, token)
+    {
+      return $http.get(getUrl()+"?filter[where][userID]="+userID,{
+          params: { access_token: token }
+      });
     };
   });
