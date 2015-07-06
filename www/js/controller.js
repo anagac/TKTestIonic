@@ -62,22 +62,43 @@ angular.module('starter.controllers', [])
     };
 })
 
-.controller('RegisterCtrl', function($scope, $state, UserModel, $ionicNavBarDelegate, $window, $ionicHistory) {
+.controller('RegisterCtrl', function($scope, $state, UserModel, $ionicNavBarDelegate, $window, $ionicHistory, CameraService) {
     
     $scope.user = {};
     $ionicNavBarDelegate.showBackButton(true);
+    
+    $scope.imageSrc = "https://s3.amazonaws.com/37assets/svn/765-default-avatar.png";
+    console.log(navigator);
+
+    $scope.getPhoto = function() {
+        var options = {
+            quality: 75,
+        	sourceType: navigator.camera.PictureSourceType.CAMERA,
+        	targetWidth: 600,
+        	targetHeight: 600,
+        	encodingType: navigator.camera.EncodingType.JPEG,
+        	correctOrientation: true
+        };
+        CameraService.getPicture(options).then(function(imageURI) {
+          console.log(imageURI);
+          $scope.imageSrc = imageURI;
+        }, function(err) {
+          console.err(err);
+        });
+    };
+    
     $scope.signupForm = function(form)
     {
-        
         if($scope.user.password !== $scope.user.password2)
         {
             alert("Passwords must be the same");
         }else if(form.$valid){
             
+            var userInfo = angular.copy($scope.user);
             //Remove password2 from the dictionary
-            delete $scope.user.password2;
+            delete userInfo.password2;
              //$http service returns a promise
-            UserModel.create($scope.user)
+            UserModel.create(userInfo)
             .then(function(response) {
                 if (response.status === 200) {
                     $window.localStorage["userID"] = response.data.id;
@@ -85,6 +106,19 @@ angular.module('starter.controllers', [])
                     loginAfterRegister();
                 } else {
                     // invalid response
+                    console.log(response);
+                    var messageString =  "";
+                    var messages = response.data.error.details.messages;
+                    console.log(messages);
+                    for (var property in messages) {
+                        if (messages.hasOwnProperty(property)) {
+                            // do stuff
+                            var messageComponent = messages[property];
+                            console.log(messageComponent);
+                            messageString = messageString + messageComponent[0]+'\n'; 
+                        }
+                    }
+                    alert(messageString);
                 }
             }, function(response) {
                 // something went wrong
@@ -117,11 +151,13 @@ angular.module('starter.controllers', [])
             //alert("Incorrect username or password");
         });
     }
+
 })
 
 .controller('LoginCtrl', function($scope, $window , $state, UserModel, $ionicNavBarDelegate, $ionicHistory) {
     $scope.user = {};
     $ionicNavBarDelegate.showBackButton(true);
+    
     $scope.loginSubmitForm = function(form)
     {
         if(form.$valid)
@@ -152,11 +188,21 @@ angular.module('starter.controllers', [])
     };
 })
 
-.controller('LobbyCtrl', function($scope, $window, $ionicHistory, $ionicNavBarDelegate, $state, ServerQuestionModel, QuestionModel, UserModel) {
+.controller('LobbyCtrl', function($scope, $window, $ionicHistory, $ionicNavBarDelegate, $state, ServerQuestionModel, QuestionModel, UserModel, AnswersService) {
     $scope.user = {};
     $ionicHistory.clearHistory();
     $ionicNavBarDelegate.showBackButton(false);
     
+    //Reset answers in answer service
+    var answers = {
+        "competing": 0,
+        "collaborating": 0,
+        "compromising": 0,
+        "avoiding": 0,
+        "accommodating": 0
+    };
+    AnswersService.setAnswers(answers);
+        
     ServerQuestionModel.all($window.localStorage['token'])
     .then(function(response) {
         if (response.status === 200) {
@@ -240,9 +286,9 @@ angular.module('starter.controllers', [])
     }
 
 })
-.controller('HistoryCtrl', function($scope, ServerAnswersModel, $window, $ionicHistory) {
+.controller('HistoryCtrl', function($scope, ServerAnswersModel, $window, $state, $ionicHistory, AnswersService) {
     $scope.answers = [];
-   ServerAnswersModel.all($window.localStorage['userID'], $window.localStorage['token'])
+    ServerAnswersModel.all($window.localStorage['userID'], $window.localStorage['token'])
     .then(function(response) {
         console.log(response);
         if (response.status === 200) {
@@ -262,5 +308,19 @@ angular.module('starter.controllers', [])
     $scope.goBack = function ()
     {
         $ionicHistory.goBack();
+    };
+    
+    $scope.goToResult = function(answer)
+    {
+        console.log(answer);  
+        var answers = {
+            "competing": answer.competing,
+            "collaborating": answer.collaborating,
+            "compromising": answer.compromising,
+            "avoiding": answer.avoiding,
+            "accommodating": answer.accommodating
+        };
+        AnswersService.setAnswers(answers);
+        $state.go('test.results');
     };
 });

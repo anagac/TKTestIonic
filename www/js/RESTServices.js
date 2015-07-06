@@ -1,5 +1,5 @@
 angular.module('RESTConnection', [])
-  .constant('ENDPOINT_URI', 'https://c9toyapp1.herokuapp.com/api/')
+  .constant('ENDPOINT_URI', 'https://ssftkapp.herokuapp.com/api/')
   .constant('QUESTION_NUMBER','Question_Number')
   .service('ServerQuestionModel', function ($http,  ENDPOINT_URI, QUESTION_NUMBER) {
     var service = this,
@@ -45,12 +45,12 @@ angular.module('RESTConnection', [])
     service.login = function(user) {
       
       user["ttl"] = 1209600000;
-      return $http.post(getUrl()+"/login",user);
+      return $http.post(getUrl()+"login",user);
     };
     
     service.logout = function(token) {
       console.log(token);
-      return $http.post(getUrl()+"/logout",token);
+      return $http.post(getUrl()+"logout",token);
     };
   })
   

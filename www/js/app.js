@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection','SSFServices', 'chart.js'])
+angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection','SSFServices', 'chart.js', 'CameraWrapper'])
 
 .run(function($ionicPlatform, $state, $window) {
   $ionicPlatform.ready(function() {
@@ -26,6 +26,55 @@ angular.module('starter', ['ionic', 'starter.controllers', 'RESTConnection','SSF
 .config(function($ionicConfigProvider) {
   $ionicConfigProvider.backButton.previousTitleText(false).text(' ');
 
+})
+.config(function($httpProvider) {
+  $httpProvider.interceptors.push(function($rootScope) {
+    return {
+      request: function(config) {
+        $rootScope.$broadcast('loading:show');
+        return config;
+      },
+      response: function(response) {
+        $rootScope.$broadcast('loading:hide');
+        return response;
+      },
+      requestError: function(reason) {
+        $rootScope.$broadcast('loading:hide');
+        return reason;
+      },
+      responseError: function(response) {
+        console.log(response);
+        $rootScope.$broadcast('loading:hide');
+        if(response.status === 401 && (response.data.error.code === "INVALID_TOKEN" || response.data.error.code === "AUTHORIZATION_REQUIRED"))
+        {
+          $rootScope.$broadcast('request:auth');
+        }
+        return response;
+      }
+    };
+  });
+})
+
+.run(function($rootScope, $ionicLoading, $state, $ionicHistory, $window) {
+  $rootScope.$on('loading:show', function() {
+    $ionicLoading.show({
+      template: '<ion-spinner ></ion-spinner>'
+    });
+  });
+
+  $rootScope.$on('loading:hide', function() {
+    $ionicLoading.hide();
+  });
+  
+  $rootScope.$on('request:auth', function() {
+    $ionicHistory.nextViewOptions({
+      historyRoot: true,
+      disableBack: true
+    });
+    delete $window.localStorage['token'];
+    delete $window.localStorage['userID'];
+    $state.go('test.home');
+  });
 })
 .config(function($stateProvider, $urlRouterProvider) {
 

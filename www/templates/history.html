@@ -6,7 +6,7 @@
   </ion-nav-buttons>
     <ion-content >
         <ion-list>
-          <ion-item ng-repeat="answer in answers">
+          <ion-item ng-repeat="answer in answers" ng-click="goToResult(answer)">
             Test {{$index+1}}
             <span class="item-note">
               {{answer.createDate | date:'dd-MMM-yyyy hh:mm a'}}

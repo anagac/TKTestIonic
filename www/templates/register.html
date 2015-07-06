@@ -1,5 +1,8 @@
 <ion-view view-title="Register">
     <ion-content class="padding">
+        <div class="circular" ng-click="getPhoto()">
+            <img src="{{imageSrc}}" align="middle"></img>
+        </div>
         <form name="registerForm" novalidate ng-submit="signupForm(registerForm)">
             <div class="list">
                 <label class="item item-input" ng-class="{ 'has-errors' : registerForm.email.$invalid && registerForm.$submitted}">

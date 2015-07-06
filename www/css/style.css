@@ -11,3 +11,24 @@
 .item-input {
   margin: 5px 0px;
 }
+
+.circular {
+	width: 200px;
+	height: 200px;
+	overflow: hidden;
+	margin-left: auto;
+	margin-right: auto;
+	border-color: #ddd;
+  border-width:1px;
+  border-style:solid;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+  vertical-align: middle
+}
+
+.circular img
+{
+    width:100%;
+    
+}

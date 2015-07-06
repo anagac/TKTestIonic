@@ -60,6 +60,11 @@ angular.module('SSFServices', [])
         return answerTypes;
     };
     
+    service.setAnswers = function(answers)
+    {
+        answerTypes = answers;
+    };
+    
     service.eraseLastAnswer = function()
     {
         answerTypes[lastAnswer.toLowerCase()]--;
