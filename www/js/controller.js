@@ -85,6 +85,7 @@ angular.module('starter.controllers', [])
         }, function(err) {
           console.err(err);
         });
+        
     };
     
     $scope.signupForm = function(form)
