@@ -8,7 +8,7 @@ describe('Controllers', function(){
 
     beforeEach(inject(function($rootScope, $controller) {
         scope = $rootScope.$new();
-        $controller('LoginCtrl', {$scope: scope});
+        loginController = $controller('LoginCtrl', {$scope: scope});
         
     }));
 
