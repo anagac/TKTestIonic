@@ -8,7 +8,7 @@ var gulp = require('gulp');
 //var sh = require('shelljs');
 
 //var jshint = require('gulp-jshint');
-var karma = require('karma').server;
+var Server = require('karma').Server;
 
 //var paths = {
 //  sass: ['./scss/**/*.scss']
@@ -64,10 +64,20 @@ gulp.task('git-check', function(done) {
 * Test task, run test once and exit
 */
 gulp.task('test', function(done) {
-    karma.start({
+  
+  var config = {
+    configFile: __dirname + '/tests/my.conf.js',
+    singleRun: true,
+    autoWatch: false
+  };
+  
+  var server = new Server(config, done)
+  server.start();
+
+  /*  karma.start({
         configFile: __dirname + '/tests/my.conf.js',
         singleRun: true
     }, function() {
         done();
-    });
+    });*/
 });
