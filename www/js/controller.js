@@ -158,7 +158,7 @@ angular.module('starter.controllers', [])
 .controller('LoginCtrl', function($scope, $window , $state, UserModel, $ionicNavBarDelegate, $ionicHistory) {
     $scope.user = {};
     $ionicNavBarDelegate.showBackButton(true);
-    
+    $scope.title = "Login";
     $scope.loginSubmitForm = function(form)
     {
         if(form.$valid)
