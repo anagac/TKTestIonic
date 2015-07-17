@@ -65,15 +65,19 @@ gulp.task('git-check', function(done) {
 */
 gulp.task('test', function(done) {
   
-  var config = {
+ /* var config = {
     configFile: __dirname + '/tests/my.conf.js',
     singleRun: true,
     autoWatch: false
   };
   
   var server = new Server(config, done);
-  server.start();
-
+  server.start();*/
+  new Server({
+    configFile: __dirname + '/tests/my.conf.js',
+    singleRun: true,
+    autoWatch: false
+  }, done).start();
   /*  karma.start({
         configFile: __dirname + '/tests/my.conf.js',
         singleRun: true
