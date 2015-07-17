@@ -71,7 +71,7 @@ gulp.task('test', function(done) {
     autoWatch: false
   };
   
-  var server = new Server(config, done)
+  var server = new Server(config, done);
   server.start();
 
   /*  karma.start({
